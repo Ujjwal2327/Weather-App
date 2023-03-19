@@ -119,7 +119,7 @@ async function renderWeatherDetails(data){
         countryIcon.src = `https://flagcdn.com/144x108/${code.toLowerCase()}.png`;
         descName.innerText = data?.weather?.[0]?.description;
         descIcon.src = `http://openweathermap.org/img/w/${data?.weather?.[0]?.icon}.png`;
-        temperature.innerText = `${(data?.main?.temp - 273).toFixed(2)} °C`;        windspeedValue.innerText = `${data?.wind?.speed} m/s`;
+        temperature.innerText = `${(data?.main?.temp - 273.15).toFixed(2)} °C`;        windspeedValue.innerText = `${data?.wind?.speed} m/s`;
         humidityValue.innerText = `${data?.main?.humidity} %`;
         cloudValue.innerText = `${data?.clouds?.all} %`;
         
