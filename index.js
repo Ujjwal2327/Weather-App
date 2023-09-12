@@ -32,9 +32,10 @@ const formSubmitBtn = document.querySelector('.form-submit-btn');
 let currentTab = yourWeatherTab;
 currentTab.classList.add('current-tab');
 
-
-// let coordinates = {};
-// localStorage.setItem("coordinates", coordinates);
+coordinates = {
+    latitude : -1,
+    longitude : -1
+};
 
 updateCurrTabProps();
 
@@ -52,9 +53,7 @@ tab.forEach((clickedTab)=>{
 
 function updateCurrTabProps(){
     if(currentTab==yourWeatherTab){
-        let coords = JSON.parse(localStorage.getItem("coordinates"));
-        // console.log("coords - ",localStorage.getItem("coordinates"), typeof coords)
-        if(!coords.latitude){
+        if(coordinates.latitude==-1){
             grantLocationAccess.classList.add('active');
             loading.classList.remove('active');
             searchForm.classList.remove('active');
@@ -85,14 +84,8 @@ grantAccessBtn.addEventListener('click', getLocation);
 function getLocation(){
     if( navigator.geolocation){
         navigator.geolocation.getCurrentPosition((position)=>{
-            let coordinates = {
-                latitude : position.coords.latitude,
-                longitude : position.coords.longitude
-            };
-            console.log(coordinates, typeof coordinates)
-            localStorage.setItem("coordinates",JSON.stringify(coordinates));
-            // console.log("updated coords - ", coordinates, typeof coordinates)
-            // console.log("updated coords - ", localStorage.getItem("coordinates"), typeof coordinates)
+            coordinates.latitude = position.coords.latitude;
+            coordinates.longitude = position.coords.longitude;
             fetchUserWeatherDetails();      // WHY CANT PUT OUTSIDE CALLBACK FUNCTION
         });
     }
@@ -107,14 +100,9 @@ async function fetchUserWeatherDetails(){
     searchForm.classList.remove('active');
     info.classList.remove('active');
     notFound.classList.remove('active');
-    let coords = JSON.parse(localStorage.getItem("coordinates"));
-    // console.log("inside fetch - ", coords);
-    // console.log("inside fetch - ", coords.latitude);
-    // console.log("inside fetch - ", coords.longitude);
-
-
+    
     try{
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coords.latitude}&lon=${coords.longitude}&appid=${API_KEY}`);
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coordinates.latitude}&lon=${coordinates.longitude}&appid=${API_KEY}`);
         const data = await response.json();
         renderWeatherDetails(data);
     }
